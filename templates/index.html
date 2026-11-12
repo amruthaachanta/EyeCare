@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EyeCare | Eye Strain Monitor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">E</span><span>EyeCare</span></a>
+    <nav><a href="#monitor">Monitor</a><a href="#how-it-works">How it works</a><a href="#history">History</a></nav>
+    <span class="privacy">● Camera stays under your control</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">DIGITAL EYE WELLNESS</p>
+        <h1>A little awareness.<br><span>A healthier screen routine.</span></h1>
+        <p class="hero-text">Monitor blinking patterns, viewing distance and screen time with your webcam. Get simple, timely reminders to give your eyes a break.</p>
+        <a class="primary-link" href="#monitor">Start monitoring <span>→</span></a>
+        <p class="disclaimer">EyeCare provides wellness indicators, not a medical diagnosis.</p>
+      </div>
+      <div class="hero-art">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <div class="eye-card">
+          <div class="eye-symbol"><span></span></div>
+          <p>Pause. Blink. Refocus.</p><small>Make screen time more mindful.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="monitor">
+      <div class="section-heading">
+        <div><p class="eyebrow">LIVE SESSION</p><h2>Your monitoring dashboard</h2></div>
+        <span class="session-state" id="sessionState"><i></i> Not started</span>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="camera-panel panel">
+          <div class="panel-head"><div><h3>Camera preview</h3><p>Position your face inside the frame</p></div><span class="camera-tag">LIVE CAMERA</span></div>
+          <div class="video-wrap">
+            <video id="video" autoplay playsinline muted></video>
+            <div class="camera-placeholder" id="cameraPlaceholder"><div class="camera-icon">◎</div><strong>Camera preview will appear here</strong><span>Start a session and allow camera access.</span></div>
+            <div class="face-status" id="faceStatus">Waiting for camera</div>
+          </div>
+          <canvas id="captureCanvas" hidden></canvas>
+          <div class="camera-actions">
+            <button class="button button-primary" id="startBtn">Start monitoring</button>
+            <button class="button button-secondary" id="calibrateBtn" disabled>Calibrate at 50 cm</button>
+            <button class="button button-quiet" id="stopBtn" disabled>End session</button>
+          </div>
+          <p class="helper" id="cameraMessage">Allow camera permission when your browser asks. Sit approximately 50 cm away before calibration.</p>
+        </div>
+
+        <div class="metrics-column">
+          <div class="score-panel panel">
+            <div class="metric-label">EYE STRAIN INDEX <span class="info-dot" title="A heuristic score based on blink rate, eye closure, distance and session duration.">i</span></div>
+            <div class="score-row"><strong id="esiValue">—</strong><span>/ 100</span><span class="level-pill" id="esiLevel">Waiting</span></div>
+          <div class="score-track"><div id="esiBar"></div></div>
+
+          <!-- Initial observation status -->
+          <div class="observation-box" id="observationBox">
+            <div class="observation-header">
+              <span id="observationStatus">Waiting for session</span>
+              <strong id="observationTimer">00:60</strong>
+            </div>
+
+            <div class="observation-track">
+              <div id="observationBar"></div>
+            </div>
+
+            <p id="observationMessage">
+              Start monitoring to begin the initial observation period.
+            </p>
+          </div>
+
+          <p id="recommendation">
+            Start a session to see your eye wellness indicators.
+          </p>
+          </div>
+          <div class="metric-grid">
+            <div class="metric panel"><span class="metric-label">BLINKS</span><strong id="blinkCount">—</strong><small>Total detected</small></div>
+            <div class="metric panel"><span class="metric-label">BLINK RATE</span><strong id="blinkRate">—</strong><small>Per minute</small></div>
+            <div class="metric panel"><span class="metric-label">VIEWING DISTANCE</span><strong id="distance">—</strong><small>Centimetres</small></div>
+            <div class="metric panel"><span class="metric-label">SCREEN TIME</span><strong id="screenTime">00:00</strong><small>Current session</small></div>
+            <div class="metric panel"><span class="metric-label">EYE ASPECT RATIO</span><strong id="ear">—</strong><small>Average EAR</small></div>
+            <div class="metric panel"><span class="metric-label">UNSAFE DISTANCE</span><strong id="unsafeTime">0s</strong><small>Time below 40 cm</small></div>
+          </div>
+          <div class="factor-panel panel">
+            <div class="panel-head"><div><h3>ESI factor breakdown</h3><p>Contribution of each indicator</p></div></div>
+            <div class="factor-row"><span>Blink pattern</span><div class="factor-track"><i id="factorBlink"></i></div><b id="factorBlinkValue">—</b></div>
+            <div class="factor-row"><span>Eye closure</span><div class="factor-track"><i id="factorClosure"></i></div><b id="factorClosureValue">—</b></div>
+            <div class="factor-row"><span>Viewing distance</span><div class="factor-track"><i id="factorDistance"></i></div><b id="factorDistanceValue">—</b></div>
+            <div class="factor-row"><span>Screen time</span><div class="factor-track"><i id="factorTime"></i></div><b id="factorTimeValue">—</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section info-section" id="how-it-works">
+      <div class="section-heading"><div><p class="eyebrow">THE PROCESS</p><h2>What EyeCare observes</h2></div></div>
+      <div class="info-grid">
+        <article class="info-card"><span>01</span><h3>Blink patterns</h3><p>Eye landmarks are used to estimate the Eye Aspect Ratio and identify blink events.</p></article>
+        <article class="info-card"><span>02</span><h3>Viewing distance</h3><p>After calibration, iris landmark separation is used to estimate distance from the screen.</p></article>
+        <article class="info-card"><span>03</span><h3>Screen time</h3><p>Session duration and detected eye-closure time contribute to the Eye Strain Index.</p></article>
+      </div>
+      <div class="notice"><strong>Privacy note</strong><p>Camera frames are processed by the application server and are not saved as images. Only session summary metrics are stored in the local application database. Use HTTPS when deployed online.</p></div>
+    </section>
+
+    <section class="section" id="history">
+      <div class="section-heading"><div><p class="eyebrow">YOUR ACTIVITY</p><h2>Recent sessions</h2></div><button class="button button-secondary" id="refreshHistory">Refresh</button></div>
+      <div class="history-panel panel">
+        <div class="history-table-wrap"><table><thead><tr><th>Date (UTC)</th><th>Duration</th><th>Blinks</th><th>Avg. blink rate</th><th>Final ESI</th></tr></thead><tbody id="historyBody"><tr><td colspan="5" class="empty">No saved sessions yet.</td></tr></tbody></table></div>
+      </div>
+    </section>
+  </main>
+  <footer><span class="brand"><span class="brand-mark">E</span> EyeCare</span><span>Built for mindful screen habits.</span></footer>
+  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
